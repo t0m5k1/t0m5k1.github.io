@@ -8,7 +8,7 @@ url: http://t0m5k1.github.io
 #url: http://localhost:4000
 
 # For a project page here should be a project name. Otherwise (for user's/organization's page leave it empty)
-baseurl: '/jekyll-clean-dark'
+baseurl: '/t0m5k1.github.io'
 
 author: Tom Rand
 copyright: 2015-2019
@@ -23,10 +23,8 @@ share:
 
 social:
   github: t0m5k1
-  stackoverflow: ''
-  linkedin: https://linkedin.com/in/thomas-rand-9199679
-  instagram: ''
-  lastfm: 'https://www.last.fm/user/t0m5k1'
+  linkedin: thomas-rand-9199679
+  lastfm: 't0m5k1'
   rss: feed.xml
 
 # Google Analytics key, leave blank to ignore
