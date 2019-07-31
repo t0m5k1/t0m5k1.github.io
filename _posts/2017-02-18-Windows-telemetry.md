@@ -4,6 +4,7 @@ title: Windows Telemetry
 date:   2017-02-18 11:07
 description: Windows 7 – 10 Telemetry …Forced?
 comments: true
+toc: true
 tags:
  - PC
  - Windows

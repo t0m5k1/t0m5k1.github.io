@@ -4,6 +4,7 @@ title: Hosting Changed
 date:   2017-02-17 11:07
 description: My host changed
 comments: true
+toc: true
 tags:
  - Site
  - Maintenance

@@ -4,6 +4,7 @@ title: Image and Graphics Software Recommendations
 date:   2017-02-19 11:07
 description: Image and Graphics Software I trust and use.
 comments: true
+toc: true
 tags:
  - PC
  - Windows

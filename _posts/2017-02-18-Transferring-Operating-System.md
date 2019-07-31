@@ -4,6 +4,7 @@ title: Transfer OS
 date:   2017-02-18 11:07
 description: Transferring Operating system
 comments: true
+toc: true
 tags:
  - PC
  - Windows

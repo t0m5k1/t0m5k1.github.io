@@ -4,6 +4,7 @@ title: Proxy+AV+IP Blocking
 date:   2017-02-19 11:07
 description: Squid Proxy with child AV scanning and AD/IP Blocking
 comments: true
+toc: true
 tags:
  - PC
  - Linux
