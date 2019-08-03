@@ -10,29 +10,39 @@ tags:
  - Windows
 ---
 
+## New Purchase
+
+So recently my PC had a major hardware change (Motherboard and CPU) in terms of licensing this is a BIG change as the Win7 license is tied to these main components however there it a way to transfer it BUT there are two caveats:
+
+1. OEM Installs cannot be moved to new hardware but it could be worth trying prior to reformat/re-install.
+2. In-place Upgrades and Repair installs cannot be moved.
 
 
-So recently my PC had a major hardware change (Motherboard & CPU) in terms of licensing this is a BIG change as the Win7 license is tied to these main components however there it a way to transfer it BUT there are two caveats:
+To achieve this there are 2 paths to take, the first and by far the easiest is the second way explained below and the correct safer more in-depth way is the first and I highly recommend you take this path even if you do not have much in the way of Windows Admin skills as you will end up with a backup and a bootable system.
 
-OEM Installs cannot be moved to new hardware but it could be worth trying prior to reformat/re-install.
-In-place Upgrades & Repair installs cannot be moved.
-To achieve this there are 2 paths to take, the first & by far the easiest is the second way explained below & the correct safer more in-depth way is the first & I highly recommend you take this path even if you do not have much in the way of Windows Admin skills as you will end up with a backup & a bootable system.
 
-Ok so the following method will provide you with a a back up of a “Generalised/SysPreped” Win7 Install, this means that it will be as it was when you first installed it & will want to install all the detected hardware.
+Ok so the following method will provide you with a a back up of a “Generalised/SysPreped” Win7 Install, this means that it will be as it was when you first installed it and will want to install all the detected hardware.
 
-Additional thoughts:
+### Additional thoughts
 
- Consider running Ccleaner to clear out any junk files.
-Run chkdsk /f /r to find & fix any potential issues that may be present & to ensure all system files are contiguous, if this creates a whole bunch of .chk files & folders then this is the time to fix that otherwise it will follow you to the new install & bite you in the butt!
+Consider running Ccleaner to clear out any junk files.
+Run chkdsk /f /r to find and fix any potential issues that may be present and to ensure all system files are contiguous, if this creates a whole bunch of .chk files and folders then this is the time to fix that otherwise it will follow you to the new install and bite you in the butt!
 Run [Defraggler][defraggler] to ensure all files on the disk are in logical order.
+
 NOTE:
-Depending on how your install was licensed using this method causes Windows 7 to lose all activation information, and it needs to be reactivated afterwards. If your Windows 7 is an OEM version, you might not be able to reactivate it, at least not without phone activation option.
-If you used a ISO you obtained from a torrent source then your system should still be licensed due to the SLIC telling Windows it is on a different motherboard anyway but if you just used a keygen you may need to dig that out (see final note.)
+Depending on how your install was licensed using this method causes Windows 7 to lose all activation information, and it needs to be reactivated afterwards. 
+If your Windows 7 is an OEM version, you might not be able to reactivate it, at least not without the phone activation option.
+
+
+If you used an ISO you obtained from a torrent source then your system should still be licensed due to the SLIC telling Windows it is on a different motherboard anyway but if you just used a keygen you may need to dig that out (see final note.)
+
 I do not recommend to use this method on RAID systems. All experiments on RAID I know have failed.
 
 Use this method if you:
 – Change other hardware components but keep your old HD containing Windows 7
 – Move the HD containing Windows 7 to another computer
+
+## The Process
 
 1. Before installing new hardware, boot Windows 7 normally
 2. Disconnect all external hardware except mouse, keyboard and main display. If your system folders are located only on C: drive, disconnect all other hard disks except that containing the C:. In case of relocated system folders, for instance the profile folder Users located in another drive and other system folders on C:, first move the relocated system folders back to C: then disconnect all other drives. Reboot after this
@@ -46,7 +56,7 @@ Use this method if you:
 ![Battery Widget]({{ '/assets/images/Sysprep_Run_and_generalize.png' | relative_url }})
 
 6. Sysprep generalizes now your Windows 7 setup and shuts down your computer. Do not run any other programs during this phase!
-   At this point you can intercept to take a backup of the system, this backup will be “Generalised” & when installed you would need to finish the last steps below BUT the backup will effectively work on ANY hardware combination!!
+   At this point you can intercept to take a backup of the system, this backup will be “Generalised” and when installed you would need to finish the last steps below BUT the backup will effectively work on ANY hardware combination!!
  1) Boot PC with an imaging CD/DVD (Paragon, Macrium etc.). Here’s a video tutorial for imaging with Macrium Free: [Imaging with free Macrium][Macrium Free-vid].
  2) Create an image of your system
  3) Turn PC off, change the hard disk(s) and reboot with imaging application, restoring the image OR boot the new computer with imaging software and restore the image.
@@ -63,13 +73,13 @@ Use this method if you:
 12. Windows boots now to default OOBE first boot desktop, with default 800*600 resolution and default theme. All your installed applications are there, as well as your old user profiles and folders. Windows has installed the default drivers for your setup, you can update them if needed
 13. Go to Control Panel > User Accounts and delete the temporary user account (in this case Test) that you just created.
 
-So there you go not hard really & now if you followed all the steps you have a backup of your system as it was when you began that you know is going to work on any hardware combination.
+So there you go not hard really and now if you followed all the steps you have a backup of your system as it was when you began that you know is going to work on any hardware combination.
 
  
 
-Easy option
+## Easy option
 
-This procedure describes how to do it. Procedure can be used in case of:
+This procedure describes how to do it. It Procedure can be used in case of:
 
 	*The Hard tutorial above doesn’t work.
 	*You forgot to SYSPREP.
@@ -112,18 +122,21 @@ NOTE:You can only add third-party drivers in INF file. If they are zipped, you n
 
 	B. Browse for an .INF file of the required driver, then click the Open button to initiate the process.
 	C. Click Yes to confirm the operation.
-10. After procedure has finished successfully and system boots fine, first check if there are any updates waiting, if you have been avoiding the Win10 upgrade & Telemetry don’t forget to grab the latest [batch update uninstaller][batch-uu] and run it before downloading updates. 
+10. After procedure has finished successfully and system boots fine, first check if there are any updates waiting, if you have been avoiding the Win10 upgrade and Telemetry don’t forget to grab the latest [batch update uninstaller][batch-uu] and run it before downloading updates. 
 	After that:
 	A. Uninstall Device and Device Driver for devices no longer attached to system. Uninstall associated software as well.
 	B. Install all of your device drivers, then Windows Updates.
 	C. Refresh your Windows Experience Index (WEI) score.
 	D. When done, all you will need to do is to activate Windows 7.
 
-After rebooting from disk, drivers should start swapping out in a cascade you can monitor by clicking on the system tray animation. Wait until all are finished before doing the requested restart. After reboot, go immediately to Check for Updates and install all Important and Optional Updates which may include critical drivers and patches for the OS to run on that hardware.
+11. After rebooting from disk the drivers should start swapping out in a cascade you can monitor by clicking on the system tray animation. Wait until all are finished before doing the requested restart. 
+12. After reboot, go immediately to Check for Updates and install all Important and Optional Updates which may include critical drivers and patches for the OS to run on that hardware.
+13. You must reactivate at the Change Product Key link on System page. If it’s not present you can insert Product Key and then Activate using [SLMgr Commands][slmgr-cmds].
 
-You must reactivate at the Change Product Key link on System page. If it’s not present you can insert Product Key and then Activate using [SLMgr Commands][slmgr-cmds].
 
-So there you have it two ways to do what many thought is not possible, I went with the first way & now have what I call a “Ready to go backup” meaning that it has all the software I use regularly, configured, licensed. This will stand me in good stead for my next project …Deploy a win7 kvm on a linux host!
+
+So there you have it two ways to do what many thought is not possible, I went with the first way and now have what I call a “Ready to go backup” meaning that it has all the software I use regularly, configured, licensed. This will stand me in good stead for my next project …Deploy a win7 kvm on a linux host!
+Additional note since site update: I have had many requests to provide a solution for Win10, I'm sorry but I doubt it would work and to be honest this was attempted by me to allow me to move to windows 10 but I wanted a way to convert what I had into a fresh image that would work any where(kvm and pc) it did for me.
 
 [defraggler]: https://www.piriform.com/defraggler/download/standard
 [Macrium Free-vid]: https://youtu.be/tY0Dlf837Vw

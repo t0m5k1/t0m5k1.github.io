@@ -14,7 +14,7 @@ tags:
 ---
 
 
-In part 1 I covered ways to use your browser in such a way as to create a “walled garden” for each of the popular websites you visit in an effort to block any and all tracking. This part I shall cover further ways to protect yourself online from either broad snooping, data leaking, mitigating metadata leaks via obfuscation and even the blocking of adverts and general website password security.
+In [part one](https://tomsbox.co.uk/2017/02/Browser-Privacy-1/)  I covered ways to use your browser in such a way as to create a “walled garden” for each of the popular websites you visit in an effort to block any and all tracking. This part I shall cover further ways to protect yourself online from either broad snooping, data leaking, mitigating metadata leaks via obfuscation and even the blocking of adverts and general website password security.
 
 So to begin with the most paranoid thing you could do is to boot up the latest copy of a live linux cd called [Tails](https://tails.boum.org/) this is a full linux installation on a cd and uses [tor browser](https://www.torproject.org/projects/torbrowser.html.en) as it’s default browser. WHOA what the hell is a tor browser? well please click the link they do a better job of explaining it than me but it is a way to connect to the internet that will make you appear anonymous.
 
@@ -22,23 +22,22 @@ So to begin with the most paranoid thing you could do is to boot up the latest c
 Currently you might have heard some bad press for Tor but come on let’s face it if we are going to allow reports of nasty people doing nasty things with something stop us from using something then you better turn off your TV, PC, Phone, Mobile, Games Console, never use a Train, Car, Plane etc.
 Every part of life has been exploited to the hilt by bad people and believe me if sick child porn gets you worried then never come on the normal internet coz it is still on there you just don’t know about it.
 
-### The Crux
-So with all the myths dispelled let’s get on with the article, to begin with we will start with a normal browser install and what to use.
-Whether I run Firefox or Chrome I always install the following 3 extensions:
+o with all the myths dispelled let’s get on with the article, to begin with we will start with a normal browser install and what to use.
+Whether I run Firefox or Chrome I always install the following 5 extensions:
 
-#### [uBlock Origin](https://github.com/gorhill/uBlock/)
+### [uBlock Origin](https://github.com/gorhill/uBlock/)
 uBlock Origin is NOT an “ad blocker”: it is a [wide-spectrum blocker](https://github.com/gorhill/uBlock/wiki/Blocking-mode) — which happens to be able to function as a mere “ad blocker”. The default behavior of uBlock Origin when newly installed is to block ads, trackers and malware sites.
 
-#### LastPass
+### LastPass
 This is a password storage platform however they have been hacked and now there is an alternative. If you want to use this you'll have to search for it as I no longer endorse them.
 
-#### [Bitwarden](https://bitwarden.com/)
+### [Bitwarden](https://bitwarden.com/)
 Essentially this does the same as LastPass Premium but for free, You can also host your own storage server as it is open source software. If you have the skills you too can also contribute your code to the project via [their github](https://github.com/bitwarden)
 
-#### [HTTPS Everywhere](https://www.eff.org/https-everywhere)
+### [HTTPS Everywhere](https://www.eff.org/https-everywhere)
 This enforces all websites to use HTTPS and will block those which do not.
 
-#### [EFF Privacy Badger](https://www.eff.org/privacybadger)
+### [EFF Privacy Badger](https://www.eff.org/privacybadger)
 Similar to Ghostery, Privacy Badger is a browser add-on that stops advertisers and other third-party trackers from secretly tracking where you go and what pages you look at on the web.  If an advertiser seems to be tracking you across multiple websites without your permission, Privacy Badger automatically blocks that advertiser from loading any more content in your browser.  To the advertiser, it's like you suddenly disappeared.
 
 I used to use ghostery but I dropped that along with AdBlock+ and swapped them for uBlock Origin as that is what is called a “Wide Spectrum Blocker” which has the ability to block adverts. It uses what we call “Block Lists” to achieve it’s goal and you basically select the lists you want active and whitelist the ones you don’t want to be affected (IE: banking sites).
@@ -71,7 +70,7 @@ Next we want to adjust the fingerprint of the actual browser, the biggest one is
 
 Now we want to be able to change ours to something less unique and something more common, much the same as we group ourselves with like minded strangers so it makes being sociable easier by way of giving ourselves something to talk about. So we use the following extension to do just that:
 
-#### [User Agent switcher](https://addons.mozilla.org/en-US/firefox/addon/user-agent-switcher/)
+## [User Agent switcher](https://addons.mozilla.org/en-US/firefox/addon/user-agent-switcher/)
 Ok so you installed it now what, well it comes with 3 groups of buttons to click so you can “become” different devices, browsers and or operating systems but there are lots more, many are [listed here](http://techpatterns.com/downloads/firefox/useragentswitcher.xml) but that may well be overkill to the basic user and so I share my own:
 
 >
@@ -178,7 +177,7 @@ anti-censorship DNS servers:
  88.198.24.111 (jali/CCCHB)
 {%endhighlight%}
 
-#### Encryption
+## Encryption
 Now we get deeper, you might have noticed that this website is using HTTP this is because my hoster is trying to charge huge prices for certificates and a static ip address therefore I am looking at other alternatives but until then this will do.
 The reason I endorse the use of HTTPS is because less of your breadcrumbs get left on the servers you visit, the “conversations” you have with servers are all private meaning it is harder for others to sniff your traffic to get your important information.
 
@@ -194,7 +193,7 @@ There are also people out there who use a VPN with Tor Browser for that added ex
 [HERE](https://torrentfreak.com/vpn-anonymous-review-160220/) is a great list of VPN providers that I would seriously consider using if I wanted a VPN, the list is comprised in such a way that the one at the top of the list basically has amnesia towards it’s customers and so when pressed will only give the most basic of information about you because they do not have the rest!
 If you do use a VPN and are doing things which some may consider questionable the consider moving to one on that list.
 
-#### Deeper Still
+## Deeper Still
 So the simplest most easiest way to access the web in an anonymous way is by using [Tor Browser](https://www.torproject.org/projects/torbrowser.html.en) many would argue that is overkill but I say many reporters and corporate workers use it and the more people who use it the better it gets and the faster the network becomes also it is sort of like a poor mans VPN (sorry to use the term) but if you use it to access normal sites like this one my logs will show you connecting from sweden, russia, ukraine, luxembourg, poland, germany, usa where ever because the exit node is random for each url/tab.
 
 Also Tor Browser comes preinstalled with many of the extensions I mention above but aside from that these days we need to be able to control how we interact on the web and we also need to ensure that dumb ass laws and borders that control our movement around the globe are not enforced on the internet as it was never designed with that in mind which is why now we need these things to effectively fix what legislation has broken.
@@ -205,7 +204,7 @@ There is also the alternative to Tor which is [i2p](https://geti2p.net/) but ala
 
 Now what comes next is probably what nearly all of the basic and some advanced users would not even bother doing just because it can be tricky but also because they see no point but for completeness and for the love of knowledge here goes.
 
-#### MAC Spoofing
+## MAC Spoofing
 …this is changing your unique MAC address to a random address (not 00:00:00:00:00:00 or AA:AA:AA:AA:AA:AA, keep it legit-looking).
 Why would I do that Tom?
 Well some people who use a modem may not want their MAC address to remain as it is and other may want to change the firewall MAC address for other reasons, remember not everything we can do is only done for nefarious reasons and to lessen our trail of breadcrumbs is better even still.
@@ -258,7 +257,7 @@ ifconfig eth0 up
 {%endhighlight%}
 Again replace eth0 with the interface you use to connect to the net.
 
-#### Mac OS X
+### Mac OS X
 
 Paste the following into Terminal (Applications/Utilities/Terminal.app):
 
@@ -270,7 +269,7 @@ sudo ifconfig en1 ether 00:00:00:00:00:00
 {%endhighlight%}
 Reconnect to a wireless network, for wired connections change ‘en1’ to ‘en0’
 
-#### BSD
+### BSD
 
 Type the following:
 
@@ -283,7 +282,7 @@ ifconfig xl0 up
 {%endhighlight%}
 Obviously you will need to ascertain your nic first.
 
-#### Windows 2000/XP
+### Windows 2000/XP
 
 Method 1:
 
@@ -310,7 +309,7 @@ Disable then re-enable the network interface that you changed (or reboot the sys
 
 If all else fails try the program [Etherchange](http://ntsecurity.nu/toolbox/etherchange/) NOTE: you browser may give a warning about malicious programs, this is due to the nature of what this program can do!!!
 
-#### Windows 9x 
+### Windows 9x 
 (Seriously if you are reading this and use this OS I’d give you the slow clap!!)
 Use the same method as Windows 2000/XP except for the registry key location is “HKEY_LOCAL_MACHINE\System\ CurrentControlSet\Services\Class\Net” and you must reboot your system.
 

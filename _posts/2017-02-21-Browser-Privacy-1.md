@@ -13,12 +13,17 @@ tags:
  - Privacy
 ---
 
+## The Start.
 
 For a while now I have been mentioning on social networks and to friends how and why I use something called a “Browser Profile” the main reason why is due to tracker cookies but also it helps me in maintaining and controlling my online presence.
 
 We all know that many people like to block adverts on websites but many do not worry about cookies, I for one do not like the fact that websites can plant a single cookie on you computer which can then record the websites you visit, Facebook is one prolific website which loves to follow you all over the web and then use this gathered browsing info to create directed advertising when you use Facebook but it does not stop there.
 
+## The Slurp
+
 Facebook can and do crawl/mine your actual browsing history, This is carried out by creating an account with them then agreeing to their terms and conditions you are allowing them to do this! But it get's worse, They also create a "ghost" profile of you based on information gleand from your friends how use their apps and website. All the permissions given to the app on a mobile phone of your friends is allowing Facebook to profile everyone and it starts with your phone number.
+
+## The Reaction
 
 So I use a separate browser profile specificity for Twitter and Facebook this way I ensure that the data about me that is can crawl/mine will only ever be from Facebook.com as will the browser history. Now when you first look into Browser Profiles and begin to use them you will need to change your browsing habits, for example if friend A shares a link to a website when I view it in my Facebook feed I don’t just click to view it I now right click and copy it to the clip board and then go to my “Normal” web browser instance and paste the URL in my address bar and visit the page. This way Facebook now has no idea I have visited the site and cannot in anyway use that website to create a targeted advert.
 
@@ -99,7 +104,7 @@ Chromium:
 
 OK so this is the reason for this post run Google-Chrome or Chromium with a custom user data directory in order to run multiple instances at the same time.
 
-#### Windows
+### Windows
 To do this, add the –user-data-dir flag to chrome.exe, like this:
 >
 {:.filename}
@@ -144,7 +149,7 @@ C:\Documents and Settings\<user>\Local Settings\Application Data\Google\Chrome\A
 
 Give this shortcut a name, change the shortcut icon to anything you want or just keep it as Chrome and you're done.
 
-#### Mac OS X
+### Mac OS X
 
 To achieve the same thing in Mac OS X take a little bit more work but still here are the steps:
 
@@ -172,7 +177,7 @@ Now close the Script Editor and find your newly created application and run it. 
 
 If you want this application to have the same icon as Chromium, then select the Chromium application and type command+i to open the info dialog. Select the icon at the top left of the info dialog and you will see a blue highlight around the icon. Copy the icon using command+c. Now open the info dialog for the new script application using command+i. Select the icon at the top left and paste the copied icon using command+v.
 
-#### Linux
+### Linux
 To do this, add the –user-data-dir flag to chrome, like this:
 >
 {:.filename}
@@ -216,13 +221,13 @@ User:
 {%endhighlight%}
 All you would do then is find the google-chrome.desktop file and copy it then edit it then save as a different filename and if you did it correctly just refresh your menu and there will be your new application shortcut.
 
-#### iPad
+### iPad
 Unfortunately if most of your web usage occurs on an iPad then you will face issues in setting up multiple profiles mainly because there is no facility to copy/edit application shortcuts. This is due to the fact that iPads just run iOS.
 
-#### Android
+### Android
 Much the same as iOS unfortunately again you will not be able to run google chrome with multiple profiles because again you have no way to edit/copy shortcuts, I have tried with a rooted android phone and a terminal emulator but the issue is compounded slightly because every android app runs in a google version of a kernel container which means when you use a terminal to edit any part of the app that part is then ignored as you changed the permissions for it!
 
-### Web Application
+## Web Application
 
 For a while now I have been running popular websites within their own window with no menu, bookmark or navigation bars. This way the website fills the entire window but is not full screen.
 

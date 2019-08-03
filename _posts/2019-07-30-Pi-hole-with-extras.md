@@ -1,11 +1,29 @@
-# Set up a Pi-Hole Ad Blocking VPN Server with a static Anycast IP on Google Cloud's Always Free Usage Tier
-## Configure Full Tunnel or Split Tunnel OpenVPN connections from your Android, iOS, Linux, macOS, & Windows devices
+---
+layout: post
+title: How to set up Pi-Hole with Pi-VPN and some extras
+date:   2019-07-30
+description: rajannpatel/Pi Hole PiVPN on Google Compute Engine Free Tier with Full Tunnel and Split Tunnel OpenVPN Configs.
+comments: true
+toc: true
+tags:
+ - PC
+ - Linux
+ - Security
+ - Privacy
+---
 
-<img src="./images/data-privacy-risk.svg" width="125" align="right">
+This is [the guide I followed](http://alturl.com/95uyd) and have encorporated it here.
+
+Set up a Pi-Hole Ad Blocking VPN Server with a static Anycast IP on Google Cloud's Always Free Usage Tier
+
+Configure Full Tunnel or Split Tunnel OpenVPN connections from your Android, iOS, Linux, macOS, & Windows devices
+
+<img src="/assets/images/data-privacy-risk.svg" width="125" align="right">
+
 
 The goal of this guide is to enable you to safely and privately use the Internet on your phones, tablets, and computers with a self-run VPN Server in the cloud. It can be run at no cost to you; shields you from intrusive advertisements; and blocks your ISP, cell phone company, public WiFi hotspot provider, and apps/websites from gaining insight into your usage activity.
 
-<img src="./images/upfront-cost.svg" width="90" align="right">
+<img src="/assets/images/upfront-cost.svg" width="90" align="right">
 
 Run your own privacy-first ad blocking service within the **[Free Usage Tier](https://cloud.google.com/free/)** on Google Cloud. **This guide gets you set up with a Google Cloud account, and walks you through setting up a full tunnel (all traffic) or split tunnel (DNS traffic only) VPN connection on your Android & iOS devices, and computers.**
 
@@ -19,43 +37,81 @@ Both Full Tunnel and Split Tunnel VPN connections provide DNS based ad-blocking 
 | full | +10% overhead for vpn | moderate | 100% encryption | yes
 | split | just kilobytes per day | very low | dns encryption only | yes
 
-The technical merits of major choices in this guide are outlined in [REASONS.md](./REASONS.md).
 
 ---
+# Platform Setup
 
-<img src="./images/logos/cloud.svg" width="48" align="left">
+<img src="/assets/images/cloud.svg" width="48" align="left">
 
-# Google Cloud Login and Account Creation
+
+## Google Cloud Login and Account Creation
 
 Go to https://cloud.google.com and click **Console** at the top right if you have previously used Google's Cloud Services, or click **Try Free** if it's your first time.
 
-### Account Creation
-- **Step 1 of 2** <br> Agree to the terms and continue. <br><img src="./images/screenshots/5.png" width="265">
-- **Step 2 of 2** <br> Set up a payments profile and continue <br><img src="./images/screenshots/5.png" width="223">
-### Project & Compute Engine Creation
-1. Click the Hamburger Menu at the top left: <br><img src="./images/screenshots/1.png" width="197">
-2. Click **Compute Engine**: <br><img src="./images/screenshots/2.png" width="138">
-3. Select **VM instances**: <br><img src="./images/screenshots/3.png" width="102">
-4. Create a Project if you don't already have one: <br><img src="./images/screenshots/4.png" width="294">
-5. Enable billing for this Project if you haven't already: <br><img src="./images/screenshots/6.png" width="288">
-- Compute Engine will begin initializing: <br><img src="./images/screenshots/7.png" width="232">
+## Account Creation
 
-<img src="./images/logos/computeengine.svg" width="48" align="left">
+- **Step 1 of 2** <br> Agree to the terms and continue. <br><img src="/assets/images/pi5.png" width="265">
+- **Step 2 of 2** <br> Set up a payments profile and continue <br><img src="/assets/images/pi5.png" width="223">
 
-# Compute Engine Virtual Machine Setup
+## Project & Compute Engine Creation
 
-1. Create a Virtual Machine instance on Compute Engine: <br><img src="./images/screenshots/8.png" width="216">
-2. Customize the instance: <br><img src="./images/screenshots/8.png" width="216">
-3. Name your Virtual Machine **pi-hole**. <br>Your Region selection should be any US region only (excluding Northern Virginia [us-east4]). I have used **us-east1** and the **us-east1-b** zone because it is closest to me. <br>Choose a **micro** Machine Type in the dropdown. <br>Change the **Boot Disk** to be **30GB** if you plan on keeping your DNS lookup records for any reason, otherwise the default **10GB** disk allocation is adequate. <br>**Allow HTTP traffic** in the Firewall (add a checkmark).
-<br>**Allow HTTPS traffic** in the Firewall (add a checkmark). <br><img src="./images/screenshots/9.png" width="232">
-4. Expand **Management, Security, disks, networking, sole tenancy** and click the **Network** tab. Click the Pencil icon under **Network Interfaces**. <br><img src="./images/screenshots/10.png" width="238">
-5. The External IP Address should not be Ephemeral. Choose **Create IP Address** to Reserve a New Static IP Address <br><img src="./images/screenshots/13.png" width="230"> <br><img src="./images/screenshots/14.png" width="395">
-6. You can log into your Virtual Machine via SSH in a Browser by clicking the SSH button. Make note of your External IP (it will be different from the screenshot below).<br><img src="./images/screenshots/15.png" width="369">
-7. Click the Hamburger Menu at the top left, click **VPC Network** and click **Firewall Rules**. <br><img src="./images/screenshots/firewall.png" width="222"> <br>Click **Create Firewall Rule** at the top center of the page. The name of your rule should be `allow-openvpn`, change the **Targets** dropdown to **All instances in the network**. The **Source IP Ranges** should be `0.0.0.0/0`. The **udp** checkbox should be selected, and the port number next to it should be changed from `all` to `1194`. Then click the **Create** button. You can disable the `default-allow-rdp` rule which Google set up with a default action of Allow, but because our server does not run any service on Port 3389 it is harmless to leave this rule alone. Do not disable the **default-allow-ssh** firewall rule, or you will disable the browser-based SSH from within the Google Cloud Console.
+1. Click the Hamburger Menu at the top left: <br><img src="/assets/images/pi1.png" width="197">
+2. Click **Compute Engine**: <br><img src="/assets/images/pi2.png" width="138">
+3. Select **VM instances**: <br><img src="/assets/images/pi3.png" width="102">
+4. Create a Project if you don't already have one: <br><img src="/assets/images/pi4.png" width="294">
+5. Enable billing for this Project if you haven't already: <br><img src="/assets/images/pi6.png" width="288">
+- Compute Engine will begin initializing: <br><img src="/assets/images/pi7.png" width="232">
 
-<img src="./images/logos/debian.svg" width="48" align="left">
+<img src="/assets/images/computeengine.svg" width="48" align="left">
 
-# Debian Update & Upgrade
+## Compute Engine Virtual Machine Setup
+
+1. Create a Virtual Machine instance on Compute Engine: 
+<br>
+<img src="/assets/images/pi8.png" width="216">
+2. Customize the instance: 
+<img src="/assets/images/pi8.png" width="216">
+
+3. Name your Virtual Machine **pi-hole**. <img src="/assets/images/pi9.png" width="232" align="right">
+Your Region selection should be any US region only (excluding Northern Virginia [us-east4]). 
+I have used **us-east1** and the **us-east1-b** zone because it is closest to me. 
+Choose a **micro** Machine Type in the dropdown. 
+Change the **Boot Disk** to be **30GB** if you plan on keeping your DNS lookup records for any reason, otherwise the default **10GB** disk allocation is adequate. 
+**Allow HTTP traffic** in the Firewall (add a checkmark).
+**Allow HTTPS traffic** in the Firewall (add a checkmark). 
+
+4. Expand **Management, Security, disks, networking, sole tenancy** and click the **Network** tab. Click the Pencil icon under **Network Interfaces**.
+<img src="/assets/images/pi10.png" width="238">
+
+5. The External IP Address should not be Ephemeral. Choose **Create IP Address** to Reserve a New Static IP Address
+<img src="/assets/images/pi13.png" width="230">
+<img src="/assets/images/pi14.png" width="395">
+
+6. You can log into your Virtual Machine via SSH in a Browser by clicking the SSH button. Make note of your External IP (it will be different from the screenshot below).
+<img src="/assets/images/pi15.png" width="369">
+
+7. Click the Hamburger Menu at the top left, click **VPC Network** and click **Firewall Rules**.
+<img src="/assets/images/firewall.png" width="222"> 
+	1) Click **Create Firewall Rule** at the top center of the page. 
+	2) The name of your rule should be `allow-openvpn`, 
+	3) change the **Targets** dropdown to **All instances in the network**. 
+	4) The **Source IP Ranges** should be `0.0.0.0/0`. 
+	5) The **udp** checkbox should be selected, and the port number next to it should be changed from `all` to `1194`. 
+	6) Then click the **Create** button. 
+	7) You can disable the `default-allow-rdp` rule which Google set up with a default action of Allow, but because our server does not run any service on Port 3389 it is harmless to leave this rule alone. 
+
+Do not disable the **default-allow-ssh** firewall rule, or you will disable the browser-based SSH from within the Google Cloud Console.
+
+---
+
+
+# OS
+After finishing the previous steps Google Cloud will have provisioned a fresh virtual machine running Debian Stretch and a default install of the Google Cloud SDK, This amognst other things will give you acces to the gcloud command from within the virtual machine. These will give you the power to make changes to the public facing firewall that you briefly configured by allowing HTTP, HTTPS, SSH and OpenVPN into your virtual machine.
+We now need to ensure the OS is up to date.
+
+<img src="/assets/images/debian.svg" width="48" align="left"> 
+## Debian Update & Upgrade
+
 
 Once you log into your Virtual Machine via SSH, you want to update and upgrade it.
 
@@ -71,7 +127,7 @@ Update and upgrade by running this command in the bash shell:
 apt-get update && apt-get upgrade -y
 ```
 
-<img src="./images/logos/pihole.svg" width="48" align="left">
+<img src="/assets/images/pihole.svg" width="48" align="left">
 
 # Pi-Hole Installation
 
@@ -91,7 +147,7 @@ curl -sSL https://install.pi-hole.net | bash
 
 You will flow into a series of prompts in a blue screen.
 
-- Choose OK or answer positively for all the prompts until the "Select Protocols" question appears. IPv6 needs to be deselected as shown below: <br><img src="./images/screenshots/16.png" width="281">
+- Choose OK or answer positively for all the prompts until the "Select Protocols" question appears. IPv6 needs to be deselected as shown below: <br><img src="/assets/images/pi16.png" width="281">
 
 - Choose OK or answer positively for all the other prompts.
 
@@ -103,11 +159,11 @@ pihole -a -p
 
 - Log into the web interface using the External IP that you noted down earlier at<br> `http://your-external-ip/admin/settings.php?tab=dns`
 
-- Click **Settings**, and navigate to **DNS**. <br>Set your **Interface Listening Behavior** to **Listen on All Interfaces** on this page: <br><img src="./images/screenshots/18.png" width="237">
+- Click **Settings**, and navigate to **DNS**. <br>Set your **Interface Listening Behavior** to **Listen on All Interfaces** on this page: <br><img src="/assets/images/pi18.png" width="237">
 
 - Click the **Save** Button at the bottom of the page.
 
-<img src="./images/logos/pivpn.png" width="48" align="left">
+<img src="/assets/images/pivpn.png" width="48" align="left">
 
 # PiVPN Installation
 
@@ -127,13 +183,17 @@ curl -L https://install.pivpn.io | bash
 
 You will flow into a series of prompts in a blue screen. All of the default values are appropriate.
 
-- Choose OK or answer positively for all the prompts until you have to choose an upstream DNS provider. The default answer is Google. Choose **Custom** and set an IP Address of **10.8.0.1** <br><img src="./images/screenshots/custom-dns.png" width="284"><br><img src="./images/screenshots/custom-dns-ip.png" width="284">
+- Choose OK or answer positively for all the prompts until you have to choose an upstream DNS provider. The default answer is Google. Choose **Custom** and set an IP Address of **10.8.0.1** 
+<br>
+<img src="/assets/images/custom-dns.png" width="284">
+<br>
+<img src="/assets/images/custom-dns-ip.png" width="284">
 
 The default answer to reboot is **No** at the end of the installer. It is fine to say **No**, we have a few more things to edit while we're logged in as root.
 
-<img src="./images/logos/openvpn.svg" width="48" align="left">
+<img src="/assets/images/openvpn.svg" width="48" align="left">
 
-# OpenVPN Configuration
+## OpenVPN Configuration
 
 Ensure you have elevated root privileges by running this command in the bash shell:
 
@@ -147,7 +207,7 @@ Get into the openvpn directory by running this command in the bash shell:
 cd /etc/openvpn
 ```
 
-## Server Configuration for VPN over UDP on Port 1194
+### Server Configuration for VPN over UDP on Port 1194
 
 Edit **server.conf**. I use **nano** to edit by running this command in the bash shell:
 
@@ -157,38 +217,38 @@ nano server.conf
 
 Comment out the line which reads `push "redirect-gateway def1"` so it reads as follows:
 
-> ```
-> # push "redirect-gateway def1"
-> ```
+ ```
+ # push "redirect-gateway def1"
+ ```
 
 The longer the keep-alive interval the longer it will take either end of the openvpn connection to detect whether the connection is no longer alive. Because mobile devices often lose connectivity and regain it, lower values are desirable.
 
 Comment out `keepalive 1800 3600` and add `keepalive 10 60` below it, so it appears as follows:
 
-> ```
-> # keepalive 1800 3600
-> keepalive 10 60
-> ```
+ ```
+ # keepalive 1800 3600
+ keepalive 10 60
+ ```
 
 Comment out the line which reads `cipher AES-256-CBC` and add `cipher AES-128-GCM` below it, so it reads as follows:
 
-> ```
-> # cipher AES-256-CBC
-> cipher AES-128-GCM
-> ```
+ ```
+ # cipher AES-256-CBC
+ cipher AES-128-GCM
+ ```
 
 At the bottom of the file add the following lines:
 
-> ```
-> # performance stuff
-> fast-io
-> compress lz4-v2
-> push "compress lz4-v2"
-> ```
+ ```
+ # performance stuff
+ fast-io
+ compress lz4-v2
+ push "compress lz4-v2"
+ ```
 
 Press `CTRL` `O` to bring up the save prompt at the bottom of Nano, press **Enter** to save. Then press `CTRL` `X` to exit
 
-## Server Configuration for VPN over TCP on Port 443
+### Server Configuration for VPN over TCP on Port 443
 
 Ensure you have elevated root privileges by running this command in the bash shell:
 
@@ -216,9 +276,9 @@ nano /etc/iptables/rules.v4
 
 Below the line which reads `-A POSTROUTING -s 10.8.0.0/24 -o eth0 -j MASQUERADE`, add the following on a new line:
 
-> ```
-> -A POSTROUTING -s 10.9.0.0/24 -o eth0 -j MASQUERADE
-> ```
+ ```
+ -A POSTROUTING -s 10.9.0.0/24 -o eth0 -j MASQUERADE
+ ```
 
 Press `CTRL` `O` to bring up the save prompt at the bottom of Nano, press **Enter** to save. Then press `CTRL` `X` to exit
 
@@ -230,35 +290,35 @@ nano server_tcp443.conf
 
 Replace the `proto udp` and `port 1194` lines with:
 
-> ```
-> proto tcp
-> port 443
-> ```
+ ```
+ proto tcp
+ port 443
+ ```
 
 Edit the `server 10.8.0.0 255.255.255.0` line to reflect an IP address of **10.9.0.0**, so it reads as follows:
 
-> ```
-> server 10.9.0.0 255.255.255.0
-> ```
+ ```
+ server 10.9.0.0 255.255.255.0
+ ```
 
 Edit the `push "dhcp-option DNS 10.8.0.1"` line to reflect an IP address of **10.9.0.1**, so it reads as follows:
 
-> ```
-> push "dhcp-option DNS 10.9.0.1"
-> ```
+ ```
+ push "dhcp-option DNS 10.9.0.1"
+ ```
 
 Comment out `keepalive 10 60` and add `keepalive 10 120` below it, so it appears as follows:
 
-> ```
-> # keepalive 10 60
-> keepalive 10 120
-> ```
+ ```
+ # keepalive 10 60
+ keepalive 10 120
+ ```
 
 Comment out `fast-io` so it looks like this:
 
-> ```
-> # fast-io
-> ```
+ ```
+ # fast-io
+ ```
 
 Press `CTRL` `O` to bring up the save prompt at the bottom of Nano, press **Enter** to save. Then press `CTRL` `X` to exit
 
@@ -268,7 +328,7 @@ Add the OpenVPN service on Port 443 by running this command in your bash shell:
 systemctl enable openvpn@server_tcp443.service
 ```
 
-## Finalize VPN Confgurations on Server
+### Finalize VPN Confgurations on Server
 
 Reboot the server by running this command in your bash shell:
 
@@ -276,7 +336,7 @@ Reboot the server by running this command in your bash shell:
 shutdown -r now
 ```
 
-<img src="./images/logos/pivpn.png" width="48" align="left">
+<img src="/assets/images/pivpn.png" width="48" align="left">
 
 # Managing the PiVPN
 
@@ -288,20 +348,20 @@ pivpn add nopass
 
 Give your client profile a name. I like to use an alphanumeric string composed of the user's first name, and their device's make and model (no spaces and no special characters).
 
-> ## NOTE
-> Make a new client profile for every device. DO NOT share a client profile between two different devices.
+>  Make a new client profile for every device. DO NOT share a client profile between two different devices.
+{: .note} 
 
 This command will output a success message which looks like this:
 
-  > ```
-  > ========================================================
-  > Done! mypixel3xl.ovpn successfully created!
-  > mypixel3xl.ovpn was copied to:
-  >   /home/myusername/ovpns
-  > for easy transfer. Please use this profile only on one
-  > device and create additional profiles for other devices.
-  > ========================================================
-  > ```
+   ```
+   ========================================================
+   Done! mypixel3xl.ovpn successfully created!
+   mypixel3xl.ovpn was copied to:
+     /home/myusername/ovpns
+   for easy transfer. Please use this profile only on one
+   device and create additional profiles for other devices.
+   ========================================================
+   ```
 
 To get the **mypixel3xl.ovpn** file to your phone it is easiest to maximize your SSH window and print the file to the terminal window, to copy & paste the output:
 
@@ -317,9 +377,9 @@ Paste this into your favorite Text Editor and save the file with a name that is 
 
 Around Line 12, edit the line which reads `cipher AES-256-CBC` and change it to read:
 
-> ```
-> cipher AES-128-GCM
-> ```
+ ```
+ cipher AES-128-GCM
+ ```
 
 ## Saving a Full Tunnel VPN Client Profile for UDP VPN Connections on Port 1194
 
@@ -327,9 +387,9 @@ Copy the contents of **mypixel3xl-udp-1194-split-tunnel.ovpn** and paste it into
 
 Below `cipher AES-128-GCM` add this line:
 
-> ```
-> redirect-gateway def1
-> ```
+ ```
+ redirect-gateway def1
+ ```
 
 ## Saving a Split Tunnel VPN Client Profile for TCP VPN Connections on Port 443
 
@@ -337,15 +397,15 @@ Copy the contents of **mypixel3xl-udp-1194-split-tunnel.ovpn** and paste it into
 
 Change `proto udp` on Line 3 to `proto tcp`
 
-> ```
-> proto tcp
-> ```
+ ```
+ proto tcp
+ ```
 
 Change the `1194` at the end of Line 4 to `443`, do not change the IP address on this line (it is your Google Compute Engine Virtual Machine's external IP address):
 
-> ```
-> remote YOUR-EXTERNAL-IP-IS-HERE-LEAVE-THIS-AS-IT-IS 443
-> ```
+ ```
+ remote YOUR-EXTERNAL-IP-IS-HERE-LEAVE-THIS-AS-IT-IS 443
+ ```
 
 
 ## Saving a Full Tunnel VPN Client Profile for TCP VPN Connections on Port 443
@@ -354,37 +414,37 @@ Copy the contents of **mypixel3xl-tcp-443-split-tunnel.ovpn** and paste it into 
 
 Below `cipher AES-128-GCM` add this line:
 
-> ```
-> redirect-gateway def1
-> ```
+ ```
+ redirect-gateway def1
+ ```
 
 ## Make these .ovpn files available on your phone or tablet
 
 E-mail these files to yourself, upload in Google Drive, or use whatever secure method you prefer to transfer this file to your device. It is safe to download this file to your device.
 
-> ## WARNING
-> Anyone that gets one of these **.ovpn** files can connect to your server.
+ ## WARNING
+ Anyone that gets one of these **.ovpn** files can connect to your server.
 
-# Full & Split Tunnel VPN on Android & iOS Devices
+## Full & Split Tunnel VPN on Android & iOS Devices
 
-<img src="./images/logos/openvpnforandroid.svg" width="48" align="left">
 
-## "OpenVPN for Android" on Android for Split Tunnel VPN
+<img src="/assets/images/openvpnforandroid.svg" width="48" align="left">
+
+### "OpenVPN for Android" on Android for Split Tunnel VPN
+
 
 This is open source software.
 
-<a href="https://f-droid.org/repository/browse/?fdid=de.blinkt.openvpn" target="_blank">
-<img src="./images/logos/f-droid.svg" alt="Get it on F-Droid" height="80"></a>
-<a href="https://play.google.com/store/apps/details?id=de.blinkt.openvpn" target="_blank">
-<img src="./images/logos/google-play.svg" alt="Get it on Google Play" height="60"></a>
+<a href="https://play.google.com/store/apps/details?id=de.blinkt.openvpn" target="_blank"><img src="/assets/images/google-play.svg" alt="Get it on Google Play" height="60"></a> <a href="https://f-droid.org/repository/browse/?fdid=de.blinkt.openvpn" target="_blank"><img src="/assets/images/f-droid.svg" alt="Get it on F-Droid" height="80"></a>
+
 
 Install the "OpenVPN for Android" application on your Android device.
 
 When the "OpenVPN for Android" opens you are in the **Profiles** Tab. You will have to perform the following steps for **mypixel3xl-udp-1194-split-tunnel.ovpn**, and again for **mypixel3xl-tcp-443-split-tunnel.ovpn**
-- Import your Profile, click the `+` at the top right. <br><img src="./images/screenshots/import-plus.png" width="360">
+- Import your Profile, click the `+` at the top right. <br><img src="/assets/images/import-plus.png" width="360">
 - Then click **Import** at the bottom left of the modal that appears.
 - Click the Hamburger Menu at the top left to choose **Google Drive**, or your **Downloads** folder, depending on what method you used to get the **.ovpn** file to your phone.
-- Click the pencil icon next to the VPN profile you imported. <br><img src="./images/screenshots/pencil.png" width="360">
+- Click the pencil icon next to the VPN profile you imported. <br><img src="/assets/images/pencil.png" width="360">
   - Click the **Server List** Tab.
     - **Connect Timeout** should be **60** for UDP VPN Profiles and **120** for TCP VPN Profiles.
   - Click the **IP AND DNS** Tab.
@@ -417,14 +477,13 @@ Click the **Settings** Tab:
 Click the back button a couple times until you are at the **Profiles** Tab again.
 - Clicking the name of the VPN profile you imported should trigger a connection.
 
-<img src="./images/logos/openvpn.svg" width="48" align="left">
+<img src="/assets/images/openvpn.svg" width="48" align="left">
 
-## "OpenVPN Connect" on Android for Full Tunnel VPN
+### "OpenVPN Connect" on Android for Full Tunnel VPN
 
 This is open source software.
 
-<a href="https://play.google.com/store/apps/details?id=net.openvpn.openvpn" target="_blank">
-<img src="./images/logos/google-play.svg" alt="Get it on Google Play" height="60"></a>
+<a href="https://play.google.com/store/apps/details?id=net.openvpn.openvpn" target="_blank"><img src="/assets/images/google-play.svg" alt="Get it on Google Play" height="60"></a>
 
 Install the "OpenVPN Connect" application on your Android device.
 
@@ -442,14 +501,13 @@ Click the Hamburger Menu at the top left and click **Settings**
 
 Click **Save** at the top right.
 
-<img src="./images/logos/openvpn.svg" width="48" align="left">
+<img src="/assets/images/openvpn.svg" width="48" align="left">
 
-## "OpenVPN Connect" on iOS for Full & Split Tunnel VPN
+### "OpenVPN Connect" on iOS for Full & Split Tunnel VPN
 
 This is open source software.
 
-<a href="https://itunes.apple.com/us/app/openvpn-connect/id590379981?mt=8" target="_blank">
-<img src="./images/logos/app-store.svg" alt="Get it on the App Store" height="60"></a>
+<a href="https://itunes.apple.com/us/app/openvpn-connect/id590379981?mt=8" target="_blank"><img src="/assets/images/app-store.svg" alt="Get it on the App Store" height="60"></a>
 
 Install the "OpenVPN Connect" application on your iOS device.
 
@@ -463,14 +521,15 @@ Click the Hamburger Menu at the top left and click **Settings**
 - Under **Compression**, the **Downlink Only** button should be selected. (The default selection is **No**)
 - Under **DNS Fallback** the checkbox should be deselected/empty. (By default the checkbox is ticked)
 
-# Full & Split Tunnel VPN on Computers
+## Full & Split Tunnel VPN on Computers
 
-> ## NOTE
 > Due to the amount of bandwidth a computer could use, it is recommended to use the Split Tunnel **.ovpn** profiles on computers, and not Full Tunnel.
+{: .note}
 
-<img src="./images/logos/viscosity.png" width="48" align="left">
 
-## "Viscosity VPN" on macOS or Windows
+<img src="/assets/images/viscosity.png" width="48" align="left">
+
+### "Viscosity VPN" on macOS or Windows
 
 This is commercial software.
 
@@ -481,9 +540,9 @@ Import the Split Tunnel **.ovpn** files once Viscosity VPN is installed and runn
 
 To enable Split Tunnel VPN with Viscosity on Windows, once you import the connection to Viscosity, **Edit Connection** and click the **Networking** Tab. Under the **DNS** *Mode* dropdown, choose `Full DNS (Use VPN DNS for all traffic)`.
 
-<img src="./images/logos/openvpn.svg" width="48" align="left">
+<img src="/assets/images/openvpn.svg" width="48" align="left">
 
-## "OpenVPN GUI" on Windows
+### "OpenVPN GUI" on Windows
 
 This is open source software.
 
@@ -492,9 +551,9 @@ This is open source software.
 
 Import the Split Tunnel **.ovpn** files once the OpenVPN GUI is installed and running.
 
-<img src="./images/logos/tunnelblick.png" width="48" align="left">
+<img src="/assets/images/tunnelblick.png" width="48" align="left">
 
-## "Tunnelblick" on macOS
+### "Tunnelblick" on macOS
 
 This is open source software.
 
@@ -508,17 +567,17 @@ If you don't have Homebrew, you can get [alternate installation instructions](ht
 
 Import the Split Tunnel **.ovpn** files once Tunnelblick is installed and running.
 
-<img src="./images/logos/gnome.png" width="48" align="left">
+<img src="/assets/images/gnome.png" width="48" align="left">
 
-## "gnome-manager" on Ubuntu (and its variants)
+### "gnome-manager" on Ubuntu (and its variants)
 
 This open source software is baked into Ubuntu's OS
 
 Enable the option which reads **Use this connection only for resources on its network** in the **IPv4** Tab
 
-# Split Tunnel VPN on Routers with AsusWRT & AsusWRT-Merlin Firmware
+## Split Tunnel VPN on Routers with AsusWRT & AsusWRT-Merlin Firmware
 
-## Activate the OpenVPN Client Profile
+### Activate the OpenVPN Client Profile
 - Go to http://&lt;AsusWRT Router IP&gt;/Advanced_OpenVPNClient_Content.asp
 - Select an unused client instance (usually Client 1).
 - Beside **Import .ovpn File**, click Browse
@@ -528,15 +587,15 @@ Enable the option which reads **Use this connection only for resources on its ne
 - Click the **Service State** toggle to activate the client
 - Scroll to the bottom and click **Apply**
 
-## Set Pi-Hole as the DNS provider
+### Set Pi-Hole as the DNS provider
 - Go to http://<AsusWRT Router IP>/Advanced_WAN_Content.asp
 - Under **WAN DNS Setting**, set **Connect to DNS Server automatically** to NO.
 - Set **DNS Server1** to 10.8.0.1
 - Scroll to the bottom and click **Apply**
 
-<img src="./images/screenshots/asuswrt-wan-settings.png" width="378">
+<img src="/assets/images/asuswrt-wan-settings.png" width="378">
 
-## Use AsusWRT Firewall to force all DNS traffic to Pi-Hole
+### Use AsusWRT Firewall to force all DNS traffic to Pi-Hole
 - Go to http://&lt;AsusWRT Router IP&gt;/Advanced_Firewall_Content.asp
 - Set **Enable Network Services Filter** to YES
 - Add the following rules to the **Network Services Filter Table**
@@ -546,22 +605,24 @@ Enable the option which reads **Use this connection only for resources on its ne
   - Destination IP = 10.8.0.1, Port Range = 53, Protocol = TCP
 - Scroll to the bottom and click **Apply** 
 
-<img src="./images/screenshots/asuswrt-network-services-filter.png" width="378">
+<img src="/assets/images/asuswrt-network-services-filter.png" width="378">
 
-# Verify Everything Works
+## Verify Everything Works
 
-## Test your Full Tunnel VPN
+Well done for making it this far. Now you need to carry out some basic testing to make sure all is well
 
-Go here: https://www.google.com/search?q=what+is+my+ip
+### Test your Full Tunnel VPN
 
-You will see your IP address displayed very prominently at the top above the label: **Your public IP address**
+Go here: https://duckduckgo.com/?q=my+ip
+
+You will see your IP address displayed very prominently just below the search barwith the label: **Your public IP address**
 
 If you see anything other than the External IP Address of your Google Compute Engine Virtual Machine, then you do not have a Full Tunnel VPN.
 
-If you see an IPv6 address while connected to the VPN, then you have a big problem.
+If you see an IPv6 address while connected to the VPN, then you have a big problem because with Goolge Cloud Virtual Machines you do not get IPv6 just yet.
 
 Example of an IPv6 address: <br>
-<img src="./images/screenshots/your-public-ip.png" width="235">
+<img src="/assets/images/your-public-ip.png" width="235">
 
 You can do some further troubleshooting by visiting: https://www.whatismyip.com
 
@@ -569,13 +630,13 @@ If you see no IPv4 address, and a public IPv6 address identical to the one from 
 
 This typically means you have a problem with your server configuration and client configuration files.
 
-## Test for a DNS Leak
+### Test for a DNS Leak
 
 If DNS lookups are not happening exclusively over the VPN connection to the Pi-Hole server, then you have a DNS leak. A DNS leak will result in ads appearing.
 
 In the Pi-Hole Web Interface at `http://your-external-ip/admin/settings.php?tab=dns` choose just one DNS provider. The two Google IPv4 DNS servers will give you the highest performance. For our test, we will deselect the Google IPv4 DNS servers and choose the 2 Cloudflare DNS servers.
 
-<img src="./images/screenshots/test-dns.png" width="378">
+<img src="/assets/images/test-dns.png" width="378">
 
 On your device, go to https://www.dnsleaktest.com/ and click the **Extended test** button. On the table in the next page, every single row must say "Cloudflare". If you see any IPs that do not belong to Cloudflare, you have a DNS leak. This typically means you have a problem with your server configuration and client configuration files.
 
@@ -583,14 +644,14 @@ Turn your VPN off and try the **Extended test** again, you will see your default
 
 Once you are done testing, only use the Google IPv4 Upstream DNS Servers if you want the fastest DNS resolvers for your Pi-Hole. You can use any of the other Upstream DNS servers if speed is not your number one requirement.
 
-## Test the Ad-blocking
+### Test the Ad-blocking
 
 A quick test page to verify if your ad blocking is working: https://blockads.fivefilters.org/?pihole
 
 The Pi-Hole project also maintains a list of excellent advertising-littered pages that you can test:
 https://pi-hole.net/pages-to-test-ad-blocking-performance/
 
-<img src="./images/logos/firewall.svg" width="48" align="left">
+<img src="/assets/images/firewall.svg" width="48" align="left">
 
 # Firewall
 
@@ -617,6 +678,7 @@ Firewall rules that are inconvenient to disable:
 
 - **default-allow-ssh** should really only be open to Google's private network, alas they leave it open to the whole world by default. Nobody can successfully brute force their way into your server on Port 22, because it's not secured with passwords. It is secured with keys. If you disable this rule, you will not be able to use the browser based SSH interface in the Google Cloud Console until you re-enable this rule.
 
+In an upcoming article I intend to intorduce another firewall into the mix here for other reasons which will prove to be not only controversial but very cool.
 
 # Configure automated Pi-Hole updates and scheduled reboots
 
@@ -637,24 +699,21 @@ If you're curious when they will run, [Stack Exchange has a great Q&A for you](h
 
 
 
-<img src="./images/logos/cloudconsole.svg" width="48" align="left">
+<img src="/assets/images/cloudconsole.svg" width="48" align="left">
 
 # Cloud Console Mobile App
 
-<a href="https://play.google.com/store/apps/details?id=com.google.android.apps.cloudconsole" target="_blank">
-<img src="./images/logos/google-play.svg" alt="Get it on Google Play" height="60"></a>
-<a href="https://itunes.apple.com/us/app/google-cloud-console/id1005120814?mt=8#iTunes" target="_blank">
-<img src="./images/logos/app-store.svg" alt="Get it on the App Store" height="60"></a>
+<br/>
+
+<a href="https://play.google.com/store/apps/details?id=com.google.android.apps.cloudconsole" target="_blank"><img src="/assets/images/google-play.svg" alt="Get it on Google Play" height="60"></a>
+<a href="https://itunes.apple.com/us/app/google-cloud-console/id1005120814?mt=8#iTunes" target="_blank"><img src="/assets/images/app-store.svg" alt="Get it on the App Store" height="60"></a>
 
 Install the "Cloud Console" app on your Android or iOS device.
 
 Manage and monitor Google Cloud Platform services from your Android or iOS device.
 
 
-# Contributions Welcome
 
-If there is something that can be done better, or if this documentation can be improved in any way, please submit a Pull Request with your fixes or edits.
+Please thank the author and provide feedback in [Issues](https://github.com/rajannpatel/Pi-Hole-PiVPN-on-Google-Compute-Engine-Free-Tier-with-Full-Tunnel-and-Split-Tunnel-OpenVPN-Configs/issues) Please also use if you are in a position to help others, or participate in improving this project.
 
-Contributors should be aware of [REASONS.md](./REASONS.md), which explain the factors behind choices made throughout this guide.
 
-Please review the [Issues](https://github.com/rajannpatel/Pi-Hole-PiVPN-on-Google-Compute-Engine-Free-Tier-with-Full-Tunnel-and-Split-Tunnel-OpenVPN-Configs/issues) if you are in a position to help others, or participate in improving this project.

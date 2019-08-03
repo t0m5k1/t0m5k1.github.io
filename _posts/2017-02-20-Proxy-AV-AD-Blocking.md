@@ -15,6 +15,10 @@ Conventions used in this article:
 $ = normal linux user
 \# = root user
 
+So were going to dive right into this.
+
+## Install 
+
 Install squid, havp, clamav, ipblock and their dependencies:
 
 >bash
@@ -34,7 +38,9 @@ configure squid to your preferences BUT ensure you add the following:
 cache_peer 127.0.0.1 parent 8080 0 no-query no-digest no-netdb-exchange default
 {% endhighlight %}
 
-configure havp as follows:
+## Configure 
+
+Config havp as follows:
 
 >nano \ vim /etc/havap/havp.conf
 {:.filename}
@@ -76,7 +82,9 @@ ENABLEARCAVIR false
 ENABLEDRWEB false
 {% endhighlight %}
 
-now at this point consider making a tmpsfs of 512-1024Mb for /var/tmp and setup /tmp as a sym link, Some distros do this by default and others have /dev/shm setup as a ramdrive but to be honest i preffer this way as you have created a fixed size for virus scanning & you know for certain that /tmp and /var/tmp will be cleared out on reboot:
+
+## Considerations
+now at this point consider making a tmpsfs of 512-1024Mb for /var/tmp and setup /tmp as a sym link, Some distro's do this by default and others have /dev/shm setup as a ramdrive but to be honest i preffer this way as you have created a fixed size for virus scanning and you know for certain that /tmp and /var/tmp will be cleared out on reboot:
 
 >bash
 {:.filename}
@@ -89,6 +97,8 @@ $ sudo -s
 # cp -rav /tmp.old /tmp; rm -r /tmp.old
 {% endhighlight %}
 
+## Iptables
+
 if you want this to be a transparent setup the following iptables rules:
 
 >bash
@@ -97,6 +107,9 @@ if you want this to be a transparent setup the following iptables rules:
 # iptables -t nat -A PREROUTING -j REDIRECT -p tcp -i eth0 -s 192.168.0.0/24 -dport 80 -to-ports 3128
 # iptables -t nat -A POSTROUTING -j MASQUERADE -p tcp -s 192.168.0.0/24 -o eth1
 {% endhighlight %}
+
+## Update definitions
+
 update clam:
 
 >bash
@@ -105,6 +118,8 @@ update clam:
 # freshclam
 {%endhighlight%}
 NOTE: you may want to have this update manually so make sure you edit /etc/clamav/freshclam.conf to run as daemon, then when you run the command above it will jump to background after initial update.
+
+## Start Services
 
 start services:
 >bash
@@ -121,4 +136,7 @@ start services:
 - or -
 # service squid start; service havp start; service ipblock start
 {%endhighlight%}
-All done, all you test with eicar file download and you should see the havp access denied page indicating a virus was found
+
+All done, all you test with [eicar file download](http://2016.eicar.org/86-0-Intended-use.html) and you should see the havp access denied page indicating a virus was found
+
+
