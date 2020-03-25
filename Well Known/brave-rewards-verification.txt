@@ -1,0 +1,4 @@
+This is a Brave Rewards publisher verification file.
+
+Domain: tomsbox.co.uk
+Token: 1d5ea39ac0240ea7dd5f76c89c19469d9b3929eb1f828c5dba0789e188caf7a0
