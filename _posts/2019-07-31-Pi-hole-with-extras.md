@@ -2,7 +2,7 @@
 layout: post
 title: How to set up Pi-Hole with Pi-VPN and some extras
 date:   2019-07-31
-description: rajannpatel/Pi Hole PiVPN on Google Compute Engine Free Tier with Full Tunnel and Split Tunnel OpenVPN Configs.
+description: Adapted from rajannpatel/Pi Hole PiVPN on Google Compute Engine Free Tier with Full Tunnel and Split Tunnel OpenVPN Configs.
 comments: true
 toc: true
 tags:
